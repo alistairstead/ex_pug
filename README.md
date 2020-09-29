@@ -1,5 +1,7 @@
 # ExPug
 
+![CI](https://github.com/alistairstead/ex_pug/workflows/CI/badge.svg)
+
 **TODO: Add description**
 
 ## Installation
