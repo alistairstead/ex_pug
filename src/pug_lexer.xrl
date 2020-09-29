@@ -9,21 +9,22 @@ OPENHTML              = <
 CLOSEHTML             = >
 CLOSETAG              = /
 EQ                    = =
-STRING                = "[^\"]+"
+STRING                = "[^\"]+"|'[^\']+'
 WORD                  = [^\(\)\t\s\n\.#=]+
 EOL                   = \n|\r\n|\r
 PIPE                  = \|
-COLON                 = :
+COLON                 = :\s
 WS                    = [\s\t]+
 BLANK                 = \n[\s\t]+\n
 % COMMENT               = \/\/(-)?([^\n]*)
 
-SYMBOLS               = [{DOT}{HASH}{PIPE}{EQ}{COLON}{OPENATTRS}{CLOSEATTRS}{OPENHTML}{CLOSEHTML}]
+SYMBOLS               = [{DOT}{HASH}{PIPE}{EQ}{OPENATTRS}{CLOSEATTRS}{OPENHTML}{CLOSEHTML}]
 CONTENT               = \s[^\s][^\n]+
 
 Rules.
 
 {SYMBOLS} : {token, {list_to_atom(TokenChars), TokenLine}}.
+{COLON} : {token, {colon, TokenLine}}.
 {STRING} : {token, {string, TokenLine, extract_string(TokenChars)}}.
 {NAME}   : {token, {name, TokenLine, TokenChars}}.
 {CLOSETAG}   : {token, {closetag, TokenLine}}.

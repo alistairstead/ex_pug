@@ -58,9 +58,9 @@ defmodule ExPug.Lexer.ElementTest do
     end
 
     test "colon" do
-      ":" >>>
+      ": " >>>
         [
-          {:":", 1}
+          {:colon, 1}
         ]
     end
 
@@ -159,56 +159,108 @@ defmodule ExPug.Lexer.ElementTest do
           {:")", 1}
         ]
     end
+
+    test "nested tags" do
+      """
+      ul
+      li Item A
+      li Item B
+      li Item C
+      """ >>>
+        [
+          {:name, 1, 'ul'},
+          {:eol, 1},
+          {:name, 2, 'li'},
+          {:content, 2, ' Item A'},
+          {:eol, 2},
+          {:name, 3, 'li'},
+          {:content, 3, ' Item B'},
+          {:eol, 3},
+          {:name, 4, 'li'},
+          {:content, 4, ' Item C'},
+          {:eol, 4}
+        ]
+    end
+
+    test "block expansion" do
+      "a: img" >>>
+        [
+          {:name, 1, 'a'},
+          {:colon, 1},
+          {:name, 1, 'img'}
+        ]
+    end
+
+    test "self-closing tags" do
+      "foo/" >>>
+        [
+          {:name, 1, 'foo'},
+          {:closetag, 1}
+        ]
+
+      "foo(bar='baz')/" >>>
+        [
+          {:name, 1, 'foo'},
+          {:"(", 1},
+          {:name, 1, 'bar'},
+          {:=, 1},
+          {:string, 1, "baz"},
+          {:")", 1},
+          {:closetag, 1}
+        ]
+    end
   end
 
-  test "tags with text content" do
-    "p This is text content." >>>
-      [
-        {:name, 1, 'p'},
-        {:content, 1, ' This is text content.'}
-      ]
-  end
+  describe "plain text" do
+    test "tags with text content" do
+      "p This is text content." >>>
+        [
+          {:name, 1, 'p'},
+          {:content, 1, ' This is text content.'}
+        ]
+    end
 
-  test "inline in a tag" do
-    "p This is plain old <em>text</em> content." >>>
-      [
-        {:name, 1, 'p'},
-        {:content, 1, ' This is plain old <em>text</em> content.'}
-      ]
-  end
+    test "inline in a tag" do
+      "p This is plain old <em>text</em> content." >>>
+        [
+          {:name, 1, 'p'},
+          {:content, 1, ' This is plain old <em>text</em> content.'}
+        ]
+    end
 
-  test "literal HTML" do
-    """
-    <html>
+    test "literal HTML" do
+      """
+      <html>
 
-    body
-      p Indenting the body tag here would make no difference.
-      p HTML itself isn't whitespace-sensitive.
+      body
+        p Indenting the body tag here would make no difference.
+        p HTML itself isn't whitespace-sensitive.
 
-    </html>
-    """ >>>
-      [
-        {:<, 1},
-        {:name, 1, 'html'},
-        {:>, 1},
-        {:eol, 1},
-        {:eol, 2},
-        {:name, 3, 'body'},
-        {:eol, 3},
-        {:ws, 4, 2},
-        {:name, 4, 'p'},
-        {:content, 4, ' Indenting the body tag here would make no difference.'},
-        {:eol, 4},
-        {:ws, 5, 2},
-        {:name, 5, 'p'},
-        {:content, 5, ' HTML itself isn\'t whitespace-sensitive.'},
-        {:eol, 5},
-        {:eol, 6},
-        {:<, 7},
-        {:closetag, 7},
-        {:name, 7, 'html'},
-        {:>, 7},
-        {:eol, 7}
-      ]
+      </html>
+      """ >>>
+        [
+          {:<, 1},
+          {:name, 1, 'html'},
+          {:>, 1},
+          {:eol, 1},
+          {:eol, 2},
+          {:name, 3, 'body'},
+          {:eol, 3},
+          {:ws, 4, 2},
+          {:name, 4, 'p'},
+          {:content, 4, ' Indenting the body tag here would make no difference.'},
+          {:eol, 4},
+          {:ws, 5, 2},
+          {:name, 5, 'p'},
+          {:content, 5, ' HTML itself isn\'t whitespace-sensitive.'},
+          {:eol, 5},
+          {:eol, 6},
+          {:<, 7},
+          {:closetag, 7},
+          {:name, 7, 'html'},
+          {:>, 7},
+          {:eol, 7}
+        ]
+    end
   end
 end
