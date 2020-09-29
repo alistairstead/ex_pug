@@ -176,5 +176,50 @@ defmodule ExPug.LexerTextTest do
           {:eol, 2}
         ]
     end
+
+    test "empty piped lines" do
+      """
+      | Don't
+      |
+      button#self-destruct touch
+      |
+      | me!
+      """ >>>
+        [
+          {:text, 1, 'Don\'t'},
+          {:eol, 1},
+          {:blank, 2},
+          {:name, 3, 'button'},
+          {:id, 3, 'self-destruct'},
+          {:text, 3, 'touch'},
+          {:eol, 3},
+          {:blank, 4},
+          {:text, 5, 'me!'},
+          {:eol, 5}
+        ]
+    end
+
+    @tag :skip
+    test "plain text block" do
+      """
+      p.
+        Using regular tags can help keep your lines short,
+        but interpolated tags may be easier to #[em visualize]
+        whether the tags and text are whitespace-separated.
+      """ >>>
+        [
+          {:name, 1, 'p'},
+          {:block, 1},
+          {:indent, 2, 2},
+          {:text, 2, 'Using regular tags can help keep your lines short,'},
+          {:eol, 2},
+          {:indent, 3, 2},
+          {:text, 3, 'but interpolated tags may be easier to #[em visualize]'},
+          {:eol, 3},
+          {:indent, 4, 2},
+          {:text, 4, 'whether the tags and text are whitespace-separated.'},
+          {:eol, 4}
+        ]
+    end
   end
 end

@@ -24,6 +24,7 @@ PIPETEXT              = {PIPE}{WS}[^\n]+
 CLASS                 = {DOT}{NAME}
 ID                    = {HASH}{NAME}
 BLOCK                 = {DOT}{EOL}
+BLANK                 = {PIPE}{EOL}
 
 Rules.
 
@@ -38,6 +39,7 @@ Rules.
 {CLASS}  : {token, {class, TokenLine, strip_first(TokenChars)}}.
 {ID}  : {token, {id, TokenLine, strip_first(TokenChars)}}.
 {BLOCK}    : {token, {block, TokenLine}}.
+{BLANK}  : {token, {blank, TokenLine}}.
 {EOL}    : {token, {eol, TokenLine}}.
 {SYMBOLS} : {token, {list_to_atom(TokenChars), TokenLine}}.
 
