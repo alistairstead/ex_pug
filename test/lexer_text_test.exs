@@ -75,11 +75,9 @@ defmodule ExPug.LexerTextTest do
           {:name, 1, 'p'},
           {:eol, 1},
           {:indent, 2, 2},
-          {:|, 2},
           {:text, 2, 'The pipe always goes at the beginning of its own line,'},
           {:eol, 2},
           {:indent, 3, 2},
-          {:|, 3},
           {:text, 3, 'not counting indentation.'},
           {:eol, 3}
         ]
@@ -132,8 +130,7 @@ defmodule ExPug.LexerTextTest do
           {:name, 3, 'br'},
           {:eol, 3},
           {:indent, 4, 2},
-          {:., 4},
-          {:eol, 4},
+          {:block, 4},
           {:indent, 5, 4},
           {:text, 5, 'This text belongs to the div tag.'},
           {:eol, 5}
@@ -151,25 +148,21 @@ defmodule ExPug.LexerTextTest do
       | ble.
       """ >>>
         [
-          {:|, 1},
           {:text, 1, 'You put the em'},
           {:eol, 1},
           {:name, 2, 'em'},
           {:text, 2, 'pha'},
           {:eol, 2},
-          {:|, 3},
           {:text, 3, 'sis on the wrong syl'},
           {:eol, 3},
           {:name, 4, 'em'},
           {:text, 4, 'la'},
           {:eol, 4},
-          {:|, 5},
           {:text, 5, 'ble.'},
           {:eol, 5}
         ]
     end
 
-    @tag :skip
     test "period after a link" do
       """
       a ...sentence ending with a link
@@ -179,7 +172,6 @@ defmodule ExPug.LexerTextTest do
           {:name, 1, 'a'},
           {:text, 1, '...sentence ending with a link'},
           {:eol, 1},
-          {:|, 2},
           {:text, 2, '.'},
           {:eol, 2}
         ]

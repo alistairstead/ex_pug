@@ -21,25 +21,17 @@ defmodule ExPug.LexerRegexTest do
         ]
     end
 
-    test "dot" do
-      "." >>>
-        [
-          {:., 1}
-        ]
-    end
-
     test "class" do
       ".class_name" >>>
         [
-          {:., 1},
-          {:name, 1, 'class_name'}
+          {:class, 1, 'class_name'}
         ]
     end
 
     test "hash" do
-      "#" >>>
+      "#identifier" >>>
         [
-          {:"#", 1}
+          {:id, 1, 'identifier'}
         ]
     end
 
@@ -50,10 +42,10 @@ defmodule ExPug.LexerRegexTest do
         ]
     end
 
-    test "pipe" do
-      "|" >>>
+    test "pipe text" do
+      "| text" >>>
         [
-          {:|, 1}
+          {:text, 1, 'text'}
         ]
     end
 

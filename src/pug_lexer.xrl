@@ -18,9 +18,12 @@ WS                    = [\s\t]
 INDENT                = ({WS}{WS})+
 % COMMENT               = \/\/(-)?([^\n]*)
 
-SYMBOLS               = [{DOT}{HASH}{PIPE}{EQ}{OPENATTRS}{CLOSEATTRS}{OPENHTML}{CLOSEHTML}]
+SYMBOLS               = [{EQ}{OPENATTRS}{CLOSEATTRS}{OPENHTML}{CLOSEHTML}]
 TEXT                  = (\s|[A-Z0-9])[^\s][^\n]+
-CONTENTBLOCK          = {DOT}{EOL}{WS}
+PIPETEXT              = {PIPE}{WS}[^\n]+
+CLASS                 = {DOT}{NAME}
+ID                    = {HASH}{NAME}
+BLOCK                 = {DOT}{EOL}
 
 Rules.
 
@@ -30,7 +33,11 @@ Rules.
 {CLOSETAG}   : {token, {closetag, TokenLine}}.
 {WS}     : {token, {ws, TokenLine, TokenLen}}.
 {INDENT}     : {token, {indent, TokenLine, TokenLen}}.
-{TEXT}   : {token, {text, TokenLine, binary_text(TokenChars)}}.
+{TEXT}   : {token, {text, TokenLine, extract_text(TokenChars)}}.
+{PIPETEXT}   : {token, {text, TokenLine, extract_text(strip_first(TokenChars))}}.
+{CLASS}  : {token, {class, TokenLine, strip_first(TokenChars)}}.
+{ID}  : {token, {id, TokenLine, strip_first(TokenChars)}}.
+{BLOCK}    : {token, {block, TokenLine}}.
 {EOL}    : {token, {eol, TokenLine}}.
 {SYMBOLS} : {token, {list_to_atom(TokenChars), TokenLine}}.
 
@@ -39,5 +46,8 @@ Erlang code.
 extract_string(Chars) when is_list(Chars) ->
     list_to_binary(lists:sublist(Chars, 2, length(Chars) - 2)).
 
-binary_text(Chars) when is_list(Chars) ->
+extract_text(Chars) when is_list(Chars) ->
     string:strip(Chars, both).
+
+strip_first(Chars) when is_list(Chars) ->
+    lists:sublist(Chars, 2, length(Chars)).

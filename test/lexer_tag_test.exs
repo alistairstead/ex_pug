@@ -30,10 +30,8 @@ defmodule ExPug.LexerTagTest do
       "h1.title.another-class" >>>
         [
           {:name, 1, 'h1'},
-          {:., 1},
-          {:name, 1, 'title'},
-          {:., 1},
-          {:name, 1, 'another-class'}
+          {:class, 1, 'title'},
+          {:class, 1, 'another-class'}
         ]
     end
 
@@ -41,8 +39,7 @@ defmodule ExPug.LexerTagTest do
       "h1#identifier" >>>
         [
           {:name, 1, 'h1'},
-          {:"#", 1},
-          {:name, 1, 'identifier'}
+          {:id, 1, 'identifier'}
         ]
     end
 
@@ -62,10 +59,8 @@ defmodule ExPug.LexerTagTest do
       "h1#identifier.class_name(title=\"Title value\")" >>>
         [
           {:name, 1, 'h1'},
-          {:"#", 1},
-          {:name, 1, 'identifier'},
-          {:., 1},
-          {:name, 1, 'class_name'},
+          {:id, 1, 'identifier'},
+          {:class, 1, 'class_name'},
           {:"(", 1},
           {:name, 1, 'title'},
           {:=, 1},
