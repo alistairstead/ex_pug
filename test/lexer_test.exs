@@ -163,19 +163,22 @@ defmodule ExPug.Lexer.ElementTest do
     test "nested tags" do
       """
       ul
-      li Item A
-      li Item B
-      li Item C
+        li Item A
+        li Item B
+        li Item C
       """ >>>
         [
           {:name, 1, 'ul'},
           {:eol, 1},
+          {:ws, 2, 2},
           {:name, 2, 'li'},
           {:content, 2, ' Item A'},
           {:eol, 2},
+          {:ws, 3, 2},
           {:name, 3, 'li'},
           {:content, 3, ' Item B'},
           {:eol, 3},
+          {:ws, 4, 2},
           {:name, 4, 'li'},
           {:content, 4, ' Item C'},
           {:eol, 4}
