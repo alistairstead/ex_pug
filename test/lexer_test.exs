@@ -265,5 +265,25 @@ defmodule ExPug.Lexer.ElementTest do
           {:eol, 7}
         ]
     end
+
+    test "piped text" do
+      """
+      p
+        | The pipe always goes at the beginning of its own line,
+        | not counting indentation.
+      """ >>>
+        [
+          {:name, 1, 'p'},
+          {:eol, 1},
+          {:ws, 2, 2},
+          {:|, 2},
+          {:content, 2, ' The pipe always goes at the beginning of its own line,'},
+          {:eol, 2},
+          {:ws, 3, 2},
+          {:|, 3},
+          {:content, 3, ' not counting indentation.'},
+          {:eol, 3}
+        ]
+    end
   end
 end
