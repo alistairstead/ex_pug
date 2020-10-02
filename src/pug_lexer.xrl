@@ -11,8 +11,8 @@ HASH                  = #
 OPENATTRS             = \(
 CLOSEATTRS            = \)
 EQ                    = =
-STRING                = "[^\"]+"|'[^\']+'
-ATTRIBUTE             = {NAME}{EQ}
+STRING                = ="[^\"]+"|='[^\']+'
+ATTRIBUTE             = ({OPENATTRS}|{WS}){NAME}{EQ}
 CLASS                 = {DOT}{NAME}
 ID                    = {HASH}{NAME}
 CLOSETAG              = /
@@ -25,7 +25,8 @@ HTMLLITERAL           = {OPENHTML}|{CLOSEHTML}
 WORD                  = [^\(\)\t\s\n\.#=]+
 PIPE                  = \|
 COLON                 = :\s
-TEXT                  = (\s|[A-Z0-9`]|#\s)[^\s][^\n]+
+% TODO this can be simplified if the preceeding tokens return a string
+TEXT                  = (\s|[A-Z0-9\`\'\"]|#\s)[^\s][^\n]+
 PIPETEXT              = {PIPE}{WS}[^\n]+
 BLOCK                 = {DOT}{EOL}
 
@@ -36,6 +37,12 @@ PUGCOMMENT            = \/\/-
 % FILTER
 FILTER                = :{NAME}
 
+% CODE
+CODE                  = \-\s[^\n]+
+CODEBLOCK             = \-\n.*[\na-z]
+BUFFEREDCODE          = =\s
+UNBUFFEREDCODE        = !=\s
+
 BLANK                 = {PIPE}{EOL}
 
 Rules.
@@ -44,15 +51,15 @@ Rules.
 {NAME}   : {token, {name, TokenLine, TokenChars}}.
 {CLASS}  : {token, {class, TokenLine, strip_first(TokenChars)}}.
 {ID}  : {token, {id, TokenLine, strip_first(TokenChars)}}.
-{ATTRIBUTE} : {token, {attribute, TokenLine, strip_last(TokenChars)}}.
+{ATTRIBUTE} : {token, {attribute, TokenLine, strip_first_and_last(TokenChars)}, "="}.
 {SYMBOLS} : {token, {list_to_atom(TokenChars), TokenLine}}.
 {STRING} : {token, {string, TokenLine, extract_string(TokenChars)}}.
 {CLOSETAG} : {token, {closetag, TokenLine}}.
 
 % Text rules
-{TEXT}   : {token, {text, TokenLine, extract_text(TokenChars)}}.
-{PIPETEXT}   : {token, {text, TokenLine, extract_text(strip_first(TokenChars))}}.
-{HTMLLITERAL} : {token, {text, TokenLine, extract_text(TokenChars)}}.
+{TEXT}   : {token, {text, TokenLine, strip_spaces(TokenChars)}}.
+{PIPETEXT}   : {token, {text, TokenLine, strip_spaces(strip_first(TokenChars))}}.
+{HTMLLITERAL} : {token, {text, TokenLine, strip_spaces(TokenChars)}}.
 
 {BLOCK}    : {token, {block, TokenLine}}.
 {COLON} : {token, {colon, TokenLine}}.
@@ -69,16 +76,30 @@ Rules.
 % Filter rules
 {FILTER} : {token, {filter, TokenLine, strip_first(TokenChars)}}.
 
+% Code rules
+{CODE} : {token, {code, TokenLine, strip_first_two(TokenChars)}}.
+{CODEBLOCK} : {token, {codeblock, TokenLine, TokenChars}}.
+{BUFFEREDCODE} : {token, {bufferedcode, TokenLine}}.
+{UNBUFFEREDCODE} : {token, {unbufferedcode, TokenLine}}.
+
 Erlang code.
 
-extract_string(Chars) when is_list(Chars) ->
-    list_to_binary(lists:sublist(Chars, 2, length(Chars) - 2)).
 
-extract_text(Chars) when is_list(Chars) ->
+
+strip_spaces(Chars) when is_list(Chars) ->
     string:strip(Chars, both).
+
+strip_first_two(Chars) when is_list(Chars) ->
+    lists:sublist(Chars, 3, length(Chars)).
 
 strip_first(Chars) when is_list(Chars) ->
     lists:sublist(Chars, 2, length(Chars)).
 
 strip_last(Chars) when is_list(Chars) ->
     lists:sublist(Chars, 1, length(Chars) -1).
+
+strip_first_and_last(Chars) when is_list(Chars) ->
+    strip_first(strip_last(Chars)).
+
+extract_string(Chars) when is_list(Chars) ->
+    list_to_binary(lists:sublist(Chars, 3, length(Chars) - 3)).

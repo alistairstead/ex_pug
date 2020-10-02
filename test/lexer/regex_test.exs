@@ -24,7 +24,7 @@ defmodule ExPug.Lexer.RegexTest do
     end
 
     test "string" do
-      "\"string\"" >>>
+      "=\"string\"" >>>
         [
           {:string, 1, "string"}
         ]
