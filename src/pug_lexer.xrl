@@ -12,6 +12,7 @@ OPENATTRS             = \(
 CLOSEATTRS            = \)
 EQ                    = =
 STRING                = "[^\"]+"|'[^\']+'
+ATTRIBUTE             = {NAME}{EQ}
 CLASS                 = {DOT}{NAME}
 ID                    = {HASH}{NAME}
 CLOSETAG              = /
@@ -24,13 +25,16 @@ HTMLLITERAL           = {OPENHTML}|{CLOSEHTML}
 WORD                  = [^\(\)\t\s\n\.#=]+
 PIPE                  = \|
 COLON                 = :\s
-TEXT                  = (\s|[A-Z0-9])[^\s][^\n]+
+TEXT                  = (\s|[A-Z0-9`]|#\s)[^\s][^\n]+
 PIPETEXT              = {PIPE}{WS}[^\n]+
 BLOCK                 = {DOT}{EOL}
 
 % COMMENT
 COMMENT               = \/\/[^-]
 PUGCOMMENT            = \/\/-
+
+% FILTER
+FILTER                = :{NAME}
 
 BLANK                 = {PIPE}{EOL}
 
@@ -40,6 +44,7 @@ Rules.
 {NAME}   : {token, {name, TokenLine, TokenChars}}.
 {CLASS}  : {token, {class, TokenLine, strip_first(TokenChars)}}.
 {ID}  : {token, {id, TokenLine, strip_first(TokenChars)}}.
+{ATTRIBUTE} : {token, {attribute, TokenLine, strip_last(TokenChars)}}.
 {SYMBOLS} : {token, {list_to_atom(TokenChars), TokenLine}}.
 {STRING} : {token, {string, TokenLine, extract_string(TokenChars)}}.
 {CLOSETAG} : {token, {closetag, TokenLine}}.
@@ -61,6 +66,9 @@ Rules.
 {COMMENT} : {token, {comment, TokenLine}, " "}.
 {PUGCOMMENT} : {token, {pugcomment, TokenLine}}.
 
+% Filter rules
+{FILTER} : {token, {filter, TokenLine, strip_first(TokenChars)}}.
+
 Erlang code.
 
 extract_string(Chars) when is_list(Chars) ->
@@ -71,3 +79,6 @@ extract_text(Chars) when is_list(Chars) ->
 
 strip_first(Chars) when is_list(Chars) ->
     lists:sublist(Chars, 2, length(Chars)).
+
+strip_last(Chars) when is_list(Chars) ->
+    lists:sublist(Chars, 1, length(Chars) -1).

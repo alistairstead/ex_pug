@@ -36,8 +36,7 @@ defmodule ExPug.Lexer.TagTest do
         [
           {:name, 1, 'h1'},
           {:"(", 1},
-          {:name, 1, 'title'},
-          {:=, 1},
+          {:attribute, 1, 'title'},
           {:string, 1, "Title value"},
           {:")", 1}
         ]
@@ -50,8 +49,7 @@ defmodule ExPug.Lexer.TagTest do
           {:id, 1, 'identifier'},
           {:class, 1, 'class_name'},
           {:"(", 1},
-          {:name, 1, 'title'},
-          {:=, 1},
+          {:attribute, 1, 'title'},
           {:string, 1, "Title value"},
           {:")", 1}
         ]
@@ -102,8 +100,7 @@ defmodule ExPug.Lexer.TagTest do
         [
           {:name, 1, 'foo'},
           {:"(", 1},
-          {:name, 1, 'bar'},
-          {:=, 1},
+          {:attribute, 1, 'bar'},
           {:string, 1, "baz"},
           {:")", 1},
           {:closetag, 1}
