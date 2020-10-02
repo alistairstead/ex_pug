@@ -50,14 +50,9 @@ defmodule ExPug.Lexer.RegexTest do
       </html>
       """ >>>
         [
-          {:<, 1},
-          {:name, 1, 'html'},
-          {:>, 1},
+          {:text, 1, '<html>'},
           {:eol, 1},
-          {:<, 2},
-          {:closetag, 2},
-          {:name, 2, 'html'},
-          {:>, 2},
+          {:text, 2, '</html>'},
           {:eol, 2}
         ]
     end

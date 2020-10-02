@@ -29,9 +29,7 @@ defmodule ExPug.Lexer.TextTest do
       </html>
       """ >>>
         [
-          {:<, 1},
-          {:name, 1, 'html'},
-          {:>, 1},
+          {:text, 1, '<html>'},
           {:eol, 1},
           {:eol, 2},
           {:name, 3, 'body'},
@@ -45,10 +43,7 @@ defmodule ExPug.Lexer.TextTest do
           {:text, 5, 'HTML itself isn\'t whitespace-sensitive.'},
           {:eol, 5},
           {:eol, 6},
-          {:<, 7},
-          {:closetag, 7},
-          {:name, 7, 'html'},
-          {:>, 7},
+          {:text, 7, '</html>'},
           {:eol, 7}
         ]
     end
