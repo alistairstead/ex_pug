@@ -1,17 +1,5 @@
-defmodule ExPug.LexerTagTest do
-  use ExUnit.Case, async: true
-
-  alias ExPug.Lexer
-  doctest Lexer
-
-  defmacro input >>> expected do
-    quote do
-      case Lexer.tokenize(unquote(input)) do
-        {:ok, tokens, _} -> assert unquote(expected) == tokens
-        {:error, lexer_error, _} -> assert unquote(expected) == lexer_error
-      end
-    end
-  end
+defmodule ExPug.Lexer.TagTest do
+  use ExPug.TemplateCase, async: true
 
   describe "tags" do
     test "bare tag" do

@@ -1,17 +1,5 @@
-defmodule ExPug.LexerRegexTest do
-  use ExUnit.Case, async: true
-
-  alias ExPug.Lexer
-  doctest Lexer
-
-  defmacro input >>> expected do
-    quote do
-      case Lexer.tokenize(unquote(input)) do
-        {:ok, tokens, _} -> assert unquote(expected) == tokens
-        {:error, lexer_error, _} -> assert unquote(expected) == lexer_error
-      end
-    end
-  end
+defmodule ExPug.Lexer.RegexTest do
+  use ExPug.TemplateCase, async: true
 
   describe "regex patterns" do
     test "name" do
