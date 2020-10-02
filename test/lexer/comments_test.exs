@@ -79,7 +79,7 @@ defmodule ExPug.Lexer.CommentsTest do
       <!--<![endif]-->
 
       body
-      p Supporting old web browsers is a pain.
+        p Supporting old web browsers is a pain.
 
       </html>
       """ >>>
@@ -104,6 +104,7 @@ defmodule ExPug.Lexer.CommentsTest do
           {:eol, 9},
           {:name, 10, 'body'},
           {:eol, 10},
+          {:indent, 11, 2},
           {:name, 11, 'p'},
           {:text, 11, 'Supporting old web browsers is a pain.'},
           {:eol, 11},
